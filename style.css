@@ -2,8 +2,9 @@
     --bg: #000000;
     --fg: #ffffff;
     --accent: #ffffff;
-    --card-w: 280px;
-    --card-h: 400px;
+    --card-w: 260px;
+    --card-h: 380px;
+    --depth: 12px;
     --easing: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
@@ -71,20 +72,20 @@ body {
 }
 
 .gallery-spacer {
-    flex: 0 0 calc(50vw - (var(--card-w) / 2));
+    flex: 0 0 calc(50vw - (var(--card-w) / 2) - 40px); /* Slightly less than half to peek next card */
 }
 
 .gallery-card {
     flex: 0 0 var(--card-w);
     height: var(--card-h);
-    margin: 0 20px;
+    margin: 0 10px; /* Reduced margin to see more cards */
     scroll-snap-align: center;
     text-decoration: none;
     color: inherit;
     position: relative;
     transform-style: preserve-3d;
     will-change: transform, opacity;
-    opacity: 0; /* Hidden until JS calculates position */
+    opacity: 0; 
     transition: opacity 0.5s ease;
 }
 
@@ -99,7 +100,34 @@ body {
     flex-direction: column;
     justify-content: space-between;
     transition: border-color 0.4s var(--easing), background 0.4s var(--easing);
-    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+/* Card Thickness/Depth */
+.card-content::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: inherit;
+    transform: translateZ(calc(var(--depth) * -1));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+}
+
+/* Connecting sides for thickness */
+.card-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: var(--depth);
+    height: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    transform: rotateY(90deg);
+    transform-origin: left;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .gallery-card:active .card-content {

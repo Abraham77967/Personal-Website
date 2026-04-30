@@ -23,23 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const cardCenterX = cardRect.left + (cardRect.width / 2);
             
             // Calculate distance from center (-1 to 1)
-            let distance = (cardCenterX - centerX) / (trackRect.width / 1.5);
+            let distance = (cardCenterX - centerX) / (trackRect.width / 2); // Faster falloff
             
             // Clamp distance
-            const clampedDistance = Math.max(-1.5, Math.min(1.5, distance));
+            const clampedDistance = Math.max(-1.8, Math.min(1.8, distance));
             
             // Apply 3D Transformations
             // 1. Rotation: cards on left rotate right, cards on right rotate left
-            const rotation = clampedDistance * -45; // Max 45 deg rotation
+            const rotation = clampedDistance * -60; // Increased rotation for depth
             
             // 2. Scale: cards in center are larger
-            const scale = 1 - (Math.abs(clampedDistance) * 0.2); // Scale down to 0.8
+            const scale = 1 - (Math.abs(clampedDistance) * 0.15); 
             
             // 3. Depth (translateZ): cards in center are closer
-            const depth = Math.abs(clampedDistance) * -200; // Push back up to 200px
+            const depth = Math.abs(clampedDistance) * -350; // Increased depth push
             
-            // 4. Opacity: cards on edges fade out
-            const opacity = Math.max(0.1, 1 - (Math.abs(clampedDistance) * 0.6));
+            // 4. Opacity: cards on edges fade out but stay visible
+            const opacity = Math.max(0.3, 1 - (Math.abs(clampedDistance) * 0.5));
 
             card.style.transform = `
                 translateX(${clampedDistance * -20}px) 
