@@ -1,53 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Lucide icons
-    if (window.lucide) {
-        lucide.createIcons();
-    }
+    lucide.createIcons();
 
-    // --- Scroll Progress Indicator ---
-    const progressLine = document.querySelector('.scroll-progress');
-    const updateScrollProgress = () => {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        if (progressLine) {
-            progressLine.style.width = scrolled + "%";
-        }
-    };
-
-    window.addEventListener('scroll', updateScrollProgress);
-
-    // --- Intersection Observer for Reveal Animations ---
-    const revealOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-    };
-
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Add a small delay based on index for staggered effect
-                const index = entry.target.style.getPropertyValue('--index') || 0;
-                setTimeout(() => {
-                    entry.target.classList.add('active');
-                }, index * 100);
-                
-                observer.unobserve(entry.target);
-            }
-        });
-    }, revealOptions);
-
-    const revealElements = document.querySelectorAll('.reveal');
-    revealElements.forEach(el => {
-        revealObserver.observe(el);
-    });
-
-    // --- Haptic Feedback Visuals (Optional but nice) ---
-    // CSS :active already handles most, but we can add more JS logic here if needed.
+    // Card Spotlight
     const cards = document.querySelectorAll('.link-card');
     cards.forEach(card => {
-        card.addEventListener('touchstart', () => {
-            // Can add specific mobile feedback here
-        }, { passive: true });
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            card.style.setProperty('--lx', `${x}%`);
+            card.style.setProperty('--ly', `${y}%`);
+        });
     });
+
+    // Main Background Spotlight
+    const bg = document.querySelector('.bg-gradient-mesh');
+    if (bg) {
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            bg.style.setProperty('--mx', `${x}%`);
+            bg.style.setProperty('--my', `${y}%`);
+        });
+
+        // Touch support
+        document.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const x = (touch.clientX / window.innerWidth) * 100;
+            const y = (touch.clientY / window.innerHeight) * 100;
+            bg.style.setProperty('--mx', `${x}%`);
+            bg.style.setProperty('--my', `${y}%`);
+        });
+    }
 });
