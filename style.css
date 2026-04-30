@@ -60,9 +60,10 @@ body {
     height: 100%;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    padding-bottom: 50px; /* Space for reflection/shadow */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    padding-bottom: 50px;
+    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .gallery-track::-webkit-scrollbar {
@@ -82,8 +83,9 @@ body {
     color: inherit;
     position: relative;
     transform-style: preserve-3d;
-    will-change: transform;
-    /* JS will update --offset from -1 to 1 */
+    will-change: transform, opacity;
+    opacity: 0; /* Hidden until JS calculates position */
+    transition: opacity 0.5s ease;
 }
 
 .card-content {

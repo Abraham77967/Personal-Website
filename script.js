@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const update3DEffect = () => {
         const trackRect = track.getBoundingClientRect();
+        if (trackRect.width === 0) {
+            requestAnimationFrame(update3DEffect);
+            return;
+        }
+
         const centerX = trackRect.left + (trackRect.width / 2);
 
         cards.forEach(card => {
@@ -18,10 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const cardCenterX = cardRect.left + (cardRect.width / 2);
             
             // Calculate distance from center (-1 to 1)
-            // We want cards within 1 viewport width to have the effect
             let distance = (cardCenterX - centerX) / (trackRect.width / 1.5);
             
-            // Clamp distance for extreme cases
+            // Clamp distance
             const clampedDistance = Math.max(-1.5, Math.min(1.5, distance));
             
             // Apply 3D Transformations
@@ -35,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const depth = Math.abs(clampedDistance) * -200; // Push back up to 200px
             
             // 4. Opacity: cards on edges fade out
-            const opacity = 1 - (Math.abs(clampedDistance) * 0.6);
+            const opacity = Math.max(0.1, 1 - (Math.abs(clampedDistance) * 0.6));
 
             card.style.transform = `
                 translateX(${clampedDistance * -20}px) 
@@ -49,15 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const icon = card.querySelector('.card-main-icon');
             if (icon) {
                 const colorValue = 1 - Math.abs(clampedDistance);
-                icon.style.opacity = 0.2 + (colorValue * 0.8);
+                icon.style.opacity = 0.2 + (Math.max(0, colorValue) * 0.8);
             }
         });
 
         requestAnimationFrame(update3DEffect);
     };
 
-    // Initial run
-    update3DEffect();
+    // Initial run with a small delay for mobile layout stability
+    setTimeout(update3DEffect, 100);
 
     // Scroll listener is optional since we use requestAnimationFrame for smooth orbit
     // but we can also trigger on scroll for better responsiveness
