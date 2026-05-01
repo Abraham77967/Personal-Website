@@ -44,7 +44,7 @@ body {
     flex: 1;
     position: relative;
     width: 100%;
-    perspective: 1200px;
+    perspective: 1500px; /* HIGHER PERSPECTIVE = WIDER FIELD OF VIEW */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -228,7 +228,7 @@ body {
     content: '';
     position: absolute;
     top: 0;
-    width: 35vw;
+    width: 20vw; /* Thinner vignette for mobile clarity */
     height: 100%;
     z-index: 10;
     pointer-events: none;
@@ -236,12 +236,12 @@ body {
 
 .gallery-viewport::before {
     left: 0;
-    background: linear-gradient(to right, var(--bg) 35%, transparent);
+    background: linear-gradient(to right, var(--bg) 10%, transparent);
 }
 
 .gallery-viewport::after {
     right: 0;
-    background: linear-gradient(to left, var(--bg) 35%, transparent);
+    background: linear-gradient(to left, var(--bg) 10%, transparent);
 }
 
 .minimal-footer {
@@ -257,7 +257,18 @@ body {
 
 @media (max-width: 600px) {
     :root {
-        --card-w: 240px;
-        --card-h: 360px;
+        --card-w: 190px;
+        --card-h: 300px;
+        --card-thickness: 18px;
+    }
+    .card-title {
+        font-size: 1.3rem;
+    }
+    .card-content {
+        padding: 20px;
+    }
+    .card-main-icon {
+        width: 56px;
+        height: 56px;
     }
 }

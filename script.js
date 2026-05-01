@@ -12,11 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
     const cardCount = cards.length;
     const theta = 360 / cardCount; // 60 degrees for 6 cards
-    const radius = 350; // Radius of the wheel
+    
+    // Mobile-aware configuration
+    const isMobile = window.innerWidth < 600;
+    const radius = isMobile ? 400 : 350; // Larger radius on mobile to push cards back
+    const sensitivity = isMobile ? 0.08 : 0.2; // Much lower sensitivity for touch screens
     
     // --- State ---
-    let rotationAngle = 0;   // Target rotation in degrees
-    let currentAngle = 0;    // Smoothed rotation for rendering
+    let rotationAngle = 0;   
+    let currentAngle = 0;    
     let isDragging = false;
     let startX = 0;
     let dragStartAngle = 0;
@@ -40,16 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const x = e.pageX || e.touches[0].pageX;
         const deltaX = x - startX;
         
-        // Convert pixel drag to angular rotation
-        // Adjust sensitivity as needed
-        const sensitivity = 0.25; 
         rotationAngle = dragStartAngle + (deltaX * sensitivity);
 
-        // Track velocity
         const now = performance.now();
         const dt = now - lastTime;
         if (dt > 0) {
-            velocity = (x - lastX) / dt * 10;
+            // Smoothed velocity tracking
+            const instantVelocity = (x - lastX) / dt * 8;
+            velocity = velocity * 0.5 + instantVelocity * 0.5;
         }
         lastTime = now;
         lastX = x;
@@ -57,9 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const onUp = () => {
         isDragging = false;
-        
-        // Snap to nearest card when momentum stops
-        // Handled in the render loop
     };
 
     viewport.addEventListener('pointerdown', onDown);
@@ -72,18 +71,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isDragging) {
             // Apply Momentum
             rotationAngle += velocity;
-            velocity *= 0.94; // Friction
+            velocity *= 0.92; // Heavier friction for better control
 
-            // Snap to nearest theta (60 degrees)
-            if (Math.abs(velocity) < 0.2) {
+            // Soft Snapping - Only kicks in when almost still
+            if (Math.abs(velocity) < 0.15) {
                 const snapTarget = Math.round(rotationAngle / theta) * theta;
-                rotationAngle += (snapTarget - rotationAngle) * 0.1;
+                // Very gentle snap to prevent jitter
+                rotationAngle += (snapTarget - rotationAngle) * 0.06;
                 velocity *= 0.8;
             }
         }
 
         // Smoothly interpolate current angle toward rotation angle
-        currentAngle += (rotationAngle - currentAngle) * 0.15;
+        // Lower lerp factor for smoother visual transition
+        currentAngle += (rotationAngle - currentAngle) * 0.12;
 
         // Position each card on the cylinder
         cards.forEach((card, i) => {
@@ -94,8 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (normalizedAngle > 180) normalizedAngle -= 360;
             if (normalizedAngle < -180) normalizedAngle += 360;
 
-            const centerFactor = Math.abs(normalizedAngle); // 0 is dead center
-            const focus = Math.max(0, 1 - (centerFactor / 90)); // Focus falloff within 90 deg
+            const centerFactor = Math.abs(normalizedAngle); 
+            const focus = Math.max(0, 1 - (centerFactor / 90)); 
             
             // Pass focus value to CSS for dynamic effects
             card.style.setProperty('--focus', focus);
@@ -104,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
             
             // Visibility and stacking
-            card.style.opacity = Math.max(0.1, focus + 0.1); // Slightly higher min opacity
+            card.style.opacity = Math.max(0.05, focus + 0.1);
             card.style.zIndex = Math.round(focus * 100);
         });
 
