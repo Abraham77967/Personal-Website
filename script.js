@@ -23,26 +23,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const cardCenterX = cardRect.left + (cardRect.width / 2);
             
             // Calculate distance from center (-1 to 1)
-            let distance = (cardCenterX - centerX) / (trackRect.width / 2); // Faster falloff
+            // Use a wider divisor to keep neighbors visible
+            let distance = (cardCenterX - centerX) / (trackRect.width / 2.2);
             
             // Clamp distance
-            const clampedDistance = Math.max(-1.8, Math.min(1.8, distance));
+            const clampedDistance = Math.max(-2, Math.min(2, distance));
             
-            // Apply 3D Transformations
-            // 1. Rotation: cards on left rotate right, cards on right rotate left
-            const rotation = clampedDistance * -60; // Increased rotation for depth
+            // Apply 3D Transformations for a "Wheel" effect
+            // 1. Rotation: Pivot cards around a central axis
+            const rotation = clampedDistance * -35; 
             
-            // 2. Scale: cards in center are larger
-            const scale = 1 - (Math.abs(clampedDistance) * 0.15); 
+            // 2. Scale: Subtle scaling
+            const scale = 1 - (Math.abs(clampedDistance) * 0.15);
             
-            // 3. Depth (translateZ): cards in center are closer
-            const depth = Math.abs(clampedDistance) * -350; // Increased depth push
+            // 3. Depth & Arc: Push back and pull toward center for the curve
+            const depth = Math.abs(clampedDistance) * -180;
+            const horizontalPull = clampedDistance * -40; // Pull neighbors inward
             
-            // 4. Opacity: cards on edges fade out but stay visible
-            const opacity = Math.max(0.3, 1 - (Math.abs(clampedDistance) * 0.5));
+            // 4. Opacity: Keep neighbors visible
+            const opacity = Math.max(0.2, 1 - (Math.abs(clampedDistance) * 0.5));
 
             card.style.transform = `
-                translateX(${clampedDistance * -20}px) 
+                translateX(${horizontalPull}px) 
                 translateZ(${depth}px) 
                 rotateY(${rotation}deg) 
                 scale(${scale})

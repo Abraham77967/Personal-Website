@@ -2,9 +2,8 @@
     --bg: #000000;
     --fg: #ffffff;
     --accent: #ffffff;
-    --card-w: 260px;
-    --card-h: 380px;
-    --depth: 12px;
+    --card-w: 280px;
+    --card-h: 400px;
     --easing: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
@@ -72,27 +71,38 @@ body {
 }
 
 .gallery-spacer {
-    flex: 0 0 calc(50vw - (var(--card-w) / 2) - 40px); /* Slightly less than half to peek next card */
+    flex: 0 0 calc(50vw - (var(--card-w) / 1.6)); /* Tighter spacing for neighbors */
 }
 
 .gallery-card {
     flex: 0 0 var(--card-w);
     height: var(--card-h);
-    margin: 0 10px; /* Reduced margin to see more cards */
+    margin: 0 10px; /* Tighter margins */
     scroll-snap-align: center;
     text-decoration: none;
     color: inherit;
     position: relative;
     transform-style: preserve-3d;
     will-change: transform, opacity;
-    opacity: 0; 
+    opacity: 0;
     transition: opacity 0.5s ease;
+}
+
+/* 3D Thickness Edge */
+.gallery-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transform: translateZ(-10px); /* The "back" of the card */
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card-content {
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(15, 15, 15, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     padding: 30px;
@@ -100,34 +110,9 @@ body {
     flex-direction: column;
     justify-content: space-between;
     transition: border-color 0.4s var(--easing), background 0.4s var(--easing);
-    transform-style: preserve-3d;
-    position: relative;
-}
-
-/* Card Thickness/Depth */
-.card-content::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: inherit;
-    transform: translateZ(calc(var(--depth) * -1));
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    pointer-events: none;
-}
-
-/* Connecting sides for thickness */
-.card-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 100%;
-    width: var(--depth);
-    height: 100%;
-    background: rgba(255, 255, 255, 0.08);
-    transform: rotateY(90deg);
-    transform-origin: left;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backface-visibility: hidden;
+    transform: translateZ(10px); /* Lift the content to create depth */
+    box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .gallery-card:active .card-content {
