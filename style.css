@@ -2,9 +2,10 @@
     --bg: #000000;
     --fg: #ffffff;
     --accent: #ffffff;
-    --card-w: 280px;
-    --card-h: 400px;
-    --easing: cubic-bezier(0.23, 1, 0.32, 1);
+    --card-w: 260px;
+    --card-h: 380px;
+    --card-thickness: 25px; /* Deep slab thickness */
+    --easing: cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 * {
@@ -19,28 +20,26 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg);
     color: var(--fg);
-    overflow: hidden; /* Prevent vertical scroll */
+    overflow: hidden;
     height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* Header */
 .main-header {
-    padding: 60px 0 20px;
+    padding: 40px 0 10px;
     text-align: center;
-    z-index: 10;
+    z-index: 100;
 }
 
 .name {
     font-family: 'Bricolage Grotesk', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 200;
-    letter-spacing: 0.6em;
-    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.8em;
+    color: rgba(255, 255, 255, 0.5);
 }
 
-/* Gallery Engine */
 .gallery-viewport {
     flex: 1;
     position: relative;
@@ -48,163 +47,214 @@ body {
     perspective: 1200px;
     display: flex;
     align-items: center;
+    justify-content: center;
     overflow: hidden;
 }
 
 .gallery-track {
+    position: relative;
+    width: var(--card-w);
+    height: var(--card-h);
+    transform-style: preserve-3d;
+    will-change: transform;
+    touch-action: pan-y;
+    user-select: none;
     display: flex;
     align-items: center;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    width: 100%;
-    height: 100%;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    padding-bottom: 50px;
-    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    justify-content: center;
 }
 
-.gallery-track::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
-}
-
-.gallery-spacer {
-    flex: 0 0 calc(50vw - (var(--card-w) / 1.6)); /* Tighter spacing for neighbors */
-}
+/* --- CARD STRUCTURE --- */
 
 .gallery-card {
-    flex: 0 0 var(--card-w);
+    position: absolute;
+    width: var(--card-w);
     height: var(--card-h);
-    margin: 0 10px; /* Tighter margins */
-    scroll-snap-align: center;
     text-decoration: none;
     color: inherit;
-    position: relative;
     transform-style: preserve-3d;
     will-change: transform, opacity;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.6s ease;
+    cursor: grab;
+    --focus: 0;
 }
 
-/* 3D Thickness Edge */
+.gallery-card:active {
+    cursor: grabbing;
+}
+
+/* THE BACK OF THE SLAB */
 .gallery-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    transform: translateZ(-10px); /* The "back" of the card */
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #080808;
+    border-radius: 24px;
+    transform: translateZ(0); /* The base */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* THE SIDES OF THE SLAB */
+.card-sides {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    pointer-events: none;
+}
+
+.side {
+    position: absolute;
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.side.top, .side.bottom {
+    width: 100%;
+    height: var(--card-thickness);
+    left: 0;
+}
+
+.side.top {
+    top: 0;
+    transform-origin: top;
+    transform: rotateX(-90deg);
+    background: linear-gradient(to bottom, #1a1a1a, #080808);
+}
+
+.side.bottom {
+    bottom: 0;
+    transform-origin: bottom;
+    transform: rotateX(90deg);
+    background: #050505;
+}
+
+.side.left, .side.right {
+    width: var(--card-thickness);
+    height: 100%;
+    top: 0;
+}
+
+.side.left {
+    left: 0;
+    transform-origin: left;
+    transform: rotateY(90deg);
+    background: linear-gradient(to right, #0a0a0a, #1a1a1a);
+}
+
+.side.right {
+    right: 0;
+    transform-origin: right;
+    transform: rotateY(-90deg);
+    background: linear-gradient(to left, #0a0a0a, #1a1a1a);
+}
+
+/* DYNAMIC GLOW */
+.card-glow {
+    position: absolute;
+    inset: -30px;
+    background: var(--card-color);
+    border-radius: 50px;
+    filter: blur(calc(40px + (var(--focus) * 50px)));
+    opacity: calc(0.05 + (var(--focus) * 0.25));
+    transform: translateZ(-10px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 .card-content {
     width: 100%;
     height: 100%;
-    background: rgba(15, 15, 15, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    background: rgba(12, 12, 12, calc(0.85 + (var(--focus) * 0.1)));
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, calc(0.1 + (var(--focus) * 0.15)));
+    border-radius: 24px;
     padding: 30px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: border-color 0.4s var(--easing), background 0.4s var(--easing);
     backface-visibility: hidden;
-    transform: translateZ(10px); /* Lift the content to create depth */
-    box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-.gallery-card:active .card-content {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: var(--card-color);
+    transform: translateZ(var(--card-thickness)); /* Lifted to the front of the slab */
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.9),
+        inset 0 1px 1px rgba(255,255,255,calc(0.1 + (var(--focus) * 0.25)));
 }
 
 .card-image-placeholder {
     width: 100%;
     aspect-ratio: 1;
     background: rgba(255, 255, 255, 0.02);
-    border-radius: 12px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .card-main-icon {
-    width: 64px;
-    height: 64px;
-    color: rgba(255, 255, 255, 0.2);
-    transition: color 0.4s var(--easing), transform 0.4s var(--easing);
-}
-
-.gallery-card:hover .card-main-icon {
+    width: 72px;
+    height: 72px;
     color: var(--card-color);
-    transform: scale(1.1);
-}
-
-.card-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    filter: drop-shadow(0 0 20px var(--card-color));
+    opacity: calc(0.2 + (var(--focus) * 0.8));
 }
 
 .card-tag {
     font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
+    font-weight: 700;
+    letter-spacing: 0.3em;
     color: var(--card-color);
     margin-bottom: 4px;
+    opacity: calc(0.7 + (var(--focus) * 0.3));
 }
 
 .card-title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 200;
     letter-spacing: -0.02em;
     font-family: 'Bricolage Grotesk', sans-serif;
+    color: rgba(255, 255, 255, calc(0.8 + (var(--focus) * 0.2)));
 }
 
 .card-desc {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, calc(0.4 + (var(--focus) * 0.3)));
     font-weight: 300;
 }
 
-/* 3D Vignette Overlay */
+/* VIGNETTE */
 .gallery-viewport::before,
 .gallery-viewport::after {
     content: '';
     position: absolute;
     top: 0;
-    width: 25vw;
+    width: 35vw;
     height: 100%;
-    z-index: 5;
+    z-index: 10;
     pointer-events: none;
 }
 
 .gallery-viewport::before {
     left: 0;
-    background: linear-gradient(to right, var(--bg), transparent);
+    background: linear-gradient(to right, var(--bg) 35%, transparent);
 }
 
 .gallery-viewport::after {
     right: 0;
-    background: linear-gradient(to left, var(--bg), transparent);
+    background: linear-gradient(to left, var(--bg) 35%, transparent);
 }
 
-/* Footer */
 .minimal-footer {
-    padding-bottom: 40px;
+    padding-bottom: 30px;
     text-align: center;
 }
 
 .minimal-footer p {
     font-size: 0.6rem;
-    letter-spacing: 0.4em;
-    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.5em;
+    color: rgba(255, 255, 255, 0.2);
 }
 
-/* Mobile Adjustments */
 @media (max-width: 600px) {
     :root {
         --card-w: 240px;
