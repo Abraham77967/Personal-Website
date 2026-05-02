@@ -122,6 +122,7 @@ body {
     transition: opacity 0.6s ease;
     cursor: grab;
     --focus: 0;
+    backface-visibility: hidden; /* Prevent mirrored text */
 }
 
 .gallery-card::before {
@@ -132,6 +133,7 @@ body {
     border-radius: 24px;
     transform: translateZ(0);
     border: 1px solid rgba(255, 255, 255, 0.05);
+    backface-visibility: hidden;
 }
 
 .card-sides {

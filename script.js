@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const theta = 360 / cardCount;
     
     const isMobile = window.innerWidth < 600;
-    const radius = isMobile ? 400 : 350; 
-    const sensitivity = isMobile ? 0.08 : 0.15; 
+    const radius = isMobile ? 280 : 350; // Closer on mobile (was 400)
+    const sensitivity = isMobile ? 0.25 : 0.15; // More responsive (was 0.08)
     const friction = 0.92;
     const MAX_VELOCITY = 5;
     
@@ -104,12 +104,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (normalizedAngle < -180) normalizedAngle += 360;
 
             const centerFactor = Math.abs(normalizedAngle); 
+            // Only show cards in the front 180 degrees
             const focus = Math.max(0, 1 - (centerFactor / 90)); 
             
             card.style.setProperty('--focus', focus);
             card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
-            card.style.opacity = Math.max(0.05, focus + 0.1);
+            
+            // Fade out completely when rotating to the back
+            card.style.opacity = centerFactor > 95 ? 0 : Math.max(0.05, focus + 0.1);
             card.style.zIndex = Math.round(focus * 100);
+            card.style.pointerEvents = focus > 0.3 ? 'auto' : 'none';
         });
 
         requestAnimationFrame(render);
