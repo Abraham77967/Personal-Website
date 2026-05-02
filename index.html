@@ -15,133 +15,194 @@
     
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header class="main-header">
-        <h1 class="name">ABRAHAM GUO</h1>
-    </header>
+<body data-theme="default">
+    <!-- HERO SECTION: 3D WHEEL -->
+    <section class="hero-section">
+        <header class="main-header">
+            <h1 class="name">ABRAHAM GUO</h1>
+            <div class="swipe-hint">[ < SWIPE TO EXPLORE > ]</div>
+        </header>
 
-    <div class="gallery-viewport">
-        <div class="gallery-track">
-            <!-- YouTube -->
-            <a href="https://www.youtube.com/@Abraham79065" target="_blank" class="gallery-card" style="--card-color: #ff0000;">
-                <div class="card-content">
-                    <div class="card-image-placeholder">
-                        <i data-lucide="youtube" class="card-main-icon"></i>
+        <div class="gallery-viewport">
+            <div class="gallery-track">
+                <!-- HOME / IDENTITY CARD -->
+                <a href="#dynamic-hub" class="gallery-card" data-project="home" style="--card-color: #ffffff;">
+                    <div class="card-glow"></div>
+                    <div class="card-sides"><div class="side top"></div><div class="side bottom"></div><div class="side left"></div><div class="side right"></div></div>
+                    <div class="card-content">
+                        <div class="card-image-placeholder"><i data-lucide="user" class="card-main-icon"></i></div>
+                        <div class="card-info">
+                            <span class="card-tag">CREATIVE DEVELOPER</span>
+                            <h3 class="card-title">Abraham Guo</h3>
+                            <div class="contact-row">
+                                <i data-lucide="github"></i>
+                                <i data-lucide="linkedin"></i>
+                                <i data-lucide="youtube" style="color: #ff0000;"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-info">
-                        <span class="card-tag">CREATIVE</span>
-                        <h3 class="card-title">YouTube</h3>
-                        <p class="card-desc">@Abraham79065</p>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- Portfolio -->
-            <a href="https://abraham77967.github.io/portfolio-super-cool/" target="_blank" class="gallery-card" style="--card-color: #6366f1;">
-                <div class="card-glow"></div>
-                <div class="card-sides">
-                    <div class="side top"></div>
-                    <div class="side bottom"></div>
-                    <div class="side left"></div>
-                    <div class="side right"></div>
-                </div>
-                <div class="card-content">
-                    <div class="card-image-placeholder">
-                        <i data-lucide="briefcase" class="card-main-icon"></i>
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">WORKS</span>
-                        <h3 class="card-title">Portfolio</h3>
-                        <p class="card-desc">My work & experience</p>
-                    </div>
-                </div>
-            </a>
 
-            <!-- Tracer -->
-            <a href="https://tracer-test.vercel.app/" target="_blank" class="gallery-card" style="--card-color: #00e5ff;">
-                <div class="card-glow"></div>
-                <div class="card-sides">
-                    <div class="side top"></div>
-                    <div class="side bottom"></div>
-                    <div class="side left"></div>
-                    <div class="side right"></div>
-                </div>
-                <div class="card-content">
-                    <div class="card-image-placeholder">
-                        <i data-lucide="bus" class="card-main-icon"></i>
+                <!-- Tracer -->
+                <a href="#dynamic-hub" class="gallery-card" data-project="tracer" style="--card-color: #00e5ff;">
+                    <div class="card-glow"></div>
+                    <div class="card-sides"><div class="side top"></div><div class="side bottom"></div><div class="side left"></div><div class="side right"></div></div>
+                    <div class="card-content">
+                        <div class="card-image-placeholder"><i data-lucide="bus" class="card-main-icon"></i></div>
+                        <div class="card-info">
+                            <span class="card-tag">UTILITY</span>
+                            <h3 class="card-title">Tracer</h3>
+                            <p class="card-desc">MTD Bus Tracker</p>
+                        </div>
                     </div>
-                    <div class="card-info">
-                        <span class="card-tag">UTILITY</span>
-                        <h3 class="card-title">Tracer</h3>
-                        <p class="card-desc">UIUC Bus Tracker</p>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- Tenor -->
-            <a href="https://abraham77967.github.io/Tenor/" target="_blank" class="gallery-card" style="--card-color: #06b6d4;">
-                <div class="card-glow"></div>
-                <div class="card-sides">
-                    <div class="side top"></div>
-                    <div class="side bottom"></div>
-                    <div class="side left"></div>
-                    <div class="side right"></div>
-                </div>
-                <div class="card-content">
-                    <div class="card-image-placeholder">
-                        <i data-lucide="calendar" class="card-main-icon"></i>
+                <!-- Tenor -->
+                <a href="#dynamic-hub" class="gallery-card" data-project="tenor" style="--card-color: #06b6d4;">
+                    <div class="card-glow"></div>
+                    <div class="card-sides"><div class="side top"></div><div class="side bottom"></div><div class="side left"></div><div class="side right"></div></div>
+                    <div class="card-content">
+                        <div class="card-image-placeholder"><i data-lucide="calendar" class="card-main-icon"></i></div>
+                        <div class="card-info">
+                            <span class="card-tag">PRODUCTIVITY</span>
+                            <h3 class="card-title">Tenor</h3>
+                            <p class="card-desc">Focus & Task Manager</p>
+                        </div>
                     </div>
-                    <div class="card-info">
-                        <span class="card-tag">PRODUCTIVITY</span>
-                        <h3 class="card-title">Tenor</h3>
-                        <p class="card-desc">Task & Calendar Tracker</p>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- Planora -->
-            <a href="https://abraham77967.github.io/planora-temp/" target="_blank" class="gallery-card" style="--card-color: #10b981;">
-                <div class="card-glow"></div>
-                <div class="card-sides">
-                    <div class="side top"></div>
-                    <div class="side bottom"></div>
-                    <div class="side left"></div>
-                    <div class="side right"></div>
-                </div>
-                <div class="card-content">
-                    <div class="card-image-placeholder">
-                        <i data-lucide="layout" class="card-main-icon"></i>
+                <!-- Planora -->
+                <a href="#dynamic-hub" class="gallery-card" data-project="planora" style="--card-color: #d946ef;">
+                    <div class="card-glow"></div>
+                    <div class="card-sides"><div class="side top"></div><div class="side bottom"></div><div class="side left"></div><div class="side right"></div></div>
+                    <div class="card-content">
+                        <div class="card-image-placeholder"><i data-lucide="layout" class="card-main-icon"></i></div>
+                        <div class="card-info">
+                            <span class="card-tag">NEWS HUB</span>
+                            <h3 class="card-title">Planora</h3>
+                            <p class="card-desc">Daily Hub & News</p>
+                        </div>
                     </div>
-                    <div class="card-info">
-                        <span class="card-tag">NEWS</span>
-                        <h3 class="card-title">Planora</h3>
-                        <p class="card-desc">Daily News & Task Tracker</p>
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <!-- Reflectra -->
-            <a href="https://abraham77967.github.io/Reflectra/" target="_blank" class="gallery-card" style="--card-color: #ec4899;">
-                <div class="card-glow"></div>
-                <div class="card-sides">
-                    <div class="side top"></div>
-                    <div class="side bottom"></div>
-                    <div class="side left"></div>
-                    <div class="side right"></div>
-                </div>
-                <div class="card-content">
-                    <div class="card-image-placeholder">
-                        <i data-lucide="heart" class="card-main-icon"></i>
+                <!-- Reflectra -->
+                <a href="#dynamic-hub" class="gallery-card" data-project="reflectra" style="--card-color: #ec4899;">
+                    <div class="card-glow"></div>
+                    <div class="card-sides"><div class="side top"></div><div class="side bottom"></div><div class="side left"></div><div class="side right"></div></div>
+                    <div class="card-content">
+                        <div class="card-image-placeholder"><i data-lucide="heart" class="card-main-icon"></i></div>
+                        <div class="card-info">
+                            <span class="card-tag">WELLNESS</span>
+                            <h3 class="card-title">Reflectra</h3>
+                            <p class="card-desc">Mental Health Platform</p>
+                        </div>
                     </div>
-                    <div class="card-info">
-                        <span class="card-tag">WELLNESS</span>
-                        <h3 class="card-title">Reflectra</h3>
-                        <p class="card-desc">Mental Health & Self Care</p>
-                    </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
-    </div>
+
+        <div class="scroll-hint">
+            <span class="scroll-text">SCROLL FOR DETAILS</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- DYNAMIC HUB -->
+    <main id="dynamic-hub" class="dynamic-hub">
+        
+        <!-- HOME / LATEST UPDATES BLOCK -->
+        <div class="detail-block" data-project="home">
+            <div class="section-header">
+                <span class="section-tag" style="color: #ffffff;">HUB</span>
+                <h2 class="section-title">Latest Updates</h2>
+            </div>
+            
+            <div class="updates-feed-grid">
+                <!-- Newest Video -->
+                <a href="https://www.youtube.com/watch?v=5SjQ00zlvCw" target="_blank" class="feed-slab youtube-slab">
+                    <div class="slab-tag">NEW VIDEO</div>
+                    <div class="slab-preview" style="background-image: url('https://img.youtube.com/vi/5SjQ00zlvCw/maxresdefault.jpg'); background-size: cover; background-position: center;">
+                        <i data-lucide="play" class="slab-icon" style="opacity: 1; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));"></i>
+                    </div>
+                    <h4 class="slab-title">Building Tenor</h4>
+                </a>
+
+                <!-- Newest Website -->
+                <a href="https://tracer-test.vercel.app/" target="_blank" class="feed-slab website-slab">
+                    <div class="slab-tag">LATEST PROJECT</div>
+                    <div class="slab-preview"><i data-lucide="bus" class="slab-icon"></i></div>
+                    <h4 class="slab-title">Tracer MTD</h4>
+                </a>
+            </div>
+        </div>
+
+
+        <!-- TRACER BLOCK -->
+        <div class="detail-block" data-project="tracer">
+            <div class="section-header">
+                <span class="section-tag" style="color: #00e5ff;">UTILITY</span>
+                <h2 class="section-title">Tracer <span class="date-badge">APRIL 2026</span></h2>
+            </div>
+            <div class="project-description-slab">
+                <p>Tracer is a high-fidelity website designed to track MTD buses in real-time. Specifically built for UIUC students, it provides a desktop-optimized interface for effortless transit monitoring.</p>
+                <div class="feature-list">
+                    <div class="feature-item"><i data-lucide="map"></i> Real-time MTD Tracking</div>
+                    <div class="feature-item"><i data-lucide="users"></i> UIUC Student Focus</div>
+                    <div class="feature-item"><i data-lucide="monitor"></i> Desktop Optimized</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TENOR BLOCK -->
+        <div class="detail-block" data-project="tenor">
+            <div class="section-header">
+                <span class="section-tag" style="color: #06b6d4;">PRODUCTIVITY</span>
+                <h2 class="section-title">Tenor <span class="date-badge">FEB 2026</span></h2>
+            </div>
+            <div class="project-description-slab">
+                <p>Tenor is an all-in-one productivity suite for students. It manages daily habits like taking pills, tracks event due dates, and includes a dedicated "Lock-in" focus timer to eliminate distractions.</p>
+                <div class="feature-list">
+                    <div class="feature-item"><i data-lucide="clock"></i> Lock-in Focus Timer</div>
+                    <div class="feature-item"><i data-lucide="list-todo"></i> Daily Habit Tracking</div>
+                    <div class="feature-item"><i data-lucide="calendar"></i> Due Date Management</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLANORA BLOCK -->
+        <div class="detail-block" data-project="planora">
+            <div class="section-header">
+                <span class="section-tag" style="color: #d946ef;">NEWS HUB</span>
+                <h2 class="section-title">Planora <span class="date-badge">MAY 2025</span></h2>
+            </div>
+            <div class="project-description-slab">
+                <p>Focusing on daily duties, Planora integrates a task calendar, local weather updates, and a categorized news hub for Tech, Education, and Economics.</p>
+                <div class="feature-list">
+                    <div class="feature-item"><i data-lucide="newspaper"></i> Categorized News</div>
+                    <div class="feature-item"><i data-lucide="cloud-sun"></i> Weather Integration</div>
+                    <div class="feature-item"><i data-lucide="calendar-days"></i> Task Calendar</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFLECTRA BLOCK -->
+        <div class="detail-block" data-project="reflectra">
+            <div class="section-header">
+                <span class="section-tag" style="color: #ec4899;">WELLNESS</span>
+                <h2 class="section-title">Reflectra <span class="date-badge">MARCH 2025</span></h2>
+            </div>
+            <div class="project-description-slab">
+                <p>A mental wellness platform developed for a hackathon. It features specialized tools for Burnout Recovery, Crave Control, and a Daily Gratitude Journal.</p>
+                <div class="feature-list">
+                    <div class="feature-item"><i data-lucide="zap"></i> Burnout Recovery</div>
+                    <div class="feature-item"><i data-lucide="shield"></i> Crave Control</div>
+                    <div class="feature-item"><i data-lucide="book-heart"></i> Gratitude Journal</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
 
     <footer class="minimal-footer">
         <p>© 2026 ABRAHAM GUO</p>
