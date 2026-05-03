@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) { lucide.createIcons(); }
 
+
     const viewport = document.querySelector('.gallery-viewport');
     const track = document.querySelector('.gallery-track');
     const cards = document.querySelectorAll('.gallery-card');
@@ -16,30 +17,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardHeight = isMobile ? 300 : 380;
     const gap = isMobile ? 80 : 120;
     const step = cardWidth + gap;
-    const DIRECTION_THRESHOLD = 8;
-
-    // Wrapping
+    const SWIPE_THRESHOLD = 30; // px needed to trigger a card change
     const totalWidth = cards.length * step;
     const halfTotal = totalWidth / 2;
 
     // --- STATE ---
+    let currentIndex = 0;
     let currentX = 0;
     let targetX = 0;
-    let isDragging = false;
-    let velocity = 0;
     let lastActiveIndex = -1;
 
     // Touch tracking
     let touchStartX = 0;
     let touchStartY = 0;
-    let dragStartTargetX = 0;
-    let lastTouchX = 0;
-    let lastTouchTime = 0;
-    let direction = null;
-    let dragDistance = 0; // Track total movement to distinguish tap vs swipe
+    let direction = null; // null | 'h' | 'v'
+    let swiped = false;   // prevents multiple triggers per gesture
 
     // --- INITIAL CARD LAYOUT ---
-    // Position all cards at the viewport center; JS will offset them each frame
     cards.forEach((card) => {
         card.style.position = 'absolute';
         card.style.left = '50%';
@@ -49,120 +43,99 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.willChange = 'transform';
     });
 
-    // Track is just a container, no movement on it
     track.style.position = 'absolute';
     track.style.left = '0';
     track.style.top = '0';
     track.style.width = '100%';
     track.style.height = '100%';
 
+    // --- NAVIGATION ---
+    const goTo = (index) => {
+        currentIndex = ((index % cards.length) + cards.length) % cards.length;
+        targetX = -currentIndex * step;
+
+        // Keep targetX in sync with wrapping to avoid long spins
+        const diff = targetX - currentX;
+        if (diff > halfTotal) targetX -= totalWidth;
+        if (diff < -halfTotal) targetX += totalWidth;
+    };
+
+    const goNext = () => goTo(currentIndex + 1);
+    const goPrev = () => goTo(currentIndex - 1);
+
     // --- TOUCH HANDLERS ---
     viewport.addEventListener('touchstart', (e) => {
         const t = e.touches[0];
         touchStartX = t.clientX;
         touchStartY = t.clientY;
-        lastTouchX = t.clientX;
-        lastTouchTime = performance.now();
-        dragStartTargetX = targetX;
-        isDragging = true;
         direction = null;
-        velocity = 0;
-        dragDistance = 0;
+        swiped = false;
 
         if (swipeHint) {
             swipeHint.style.opacity = '0';
-            // Use visibility:hidden instead of remove() to preserve layout space
             setTimeout(() => { swipeHint.style.visibility = 'hidden'; }, 600);
         }
     }, { passive: true });
 
     viewport.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-
         const t = e.touches[0];
         const dx = t.clientX - touchStartX;
         const dy = t.clientY - touchStartY;
 
+        // Decide direction once
         if (direction === null) {
-            if (Math.abs(dx) > DIRECTION_THRESHOLD || Math.abs(dy) > DIRECTION_THRESHOLD) {
+            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
                 direction = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
             } else {
                 return;
             }
         }
 
-        if (direction === 'v') {
-            isDragging = false;
-            return;
+        if (direction === 'v') return; // let browser scroll
+
+        e.preventDefault(); // lock vertical scroll during horizontal swipe
+
+        // Trigger card change once per gesture
+        if (!swiped && Math.abs(dx) > SWIPE_THRESHOLD) {
+            swiped = true;
+            if (dx < 0) goNext();
+            else goPrev();
         }
-
-        e.preventDefault();
-
-        const now = performance.now();
-        const dt = now - lastTouchTime;
-        if (dt > 0) {
-            const raw = ((t.clientX - lastTouchX) / dt) * 12;
-            velocity = Math.max(-15, Math.min(15, raw));
-        }
-        lastTouchX = t.clientX;
-        lastTouchTime = now;
-
-        targetX = dragStartTargetX + dx;
-        dragDistance = Math.abs(dx);
     }, { passive: false });
 
-    viewport.addEventListener('touchend', () => {
-        isDragging = false;
-        direction = null;
-    });
-
-    viewport.addEventListener('touchcancel', () => {
-        isDragging = false;
-        direction = null;
-    });
-
-    // Block link navigation if it was a swipe, not a tap
-    viewport.addEventListener('click', (e) => {
-        if (dragDistance > DIRECTION_THRESHOLD) {
-            e.preventDefault();
-        }
-    });
-
     // --- MOUSE FALLBACK ---
-    let mouseDown = false;
+    let mouseStartX = 0;
+    let mouseSwiped = false;
+
     viewport.addEventListener('mousedown', (e) => {
-        mouseDown = true;
-        touchStartX = e.clientX;
-        dragStartTargetX = targetX;
-        lastTouchX = e.clientX;
-        lastTouchTime = performance.now();
-        velocity = 0;
-        isDragging = true;
+        mouseStartX = e.clientX;
+        mouseSwiped = false;
         e.preventDefault();
     });
 
     window.addEventListener('mousemove', (e) => {
-        if (!mouseDown) return;
-        const dx = e.clientX - touchStartX;
-
-        const now = performance.now();
-        const dt = now - lastTouchTime;
-        if (dt > 0) {
-            const raw = ((e.clientX - lastTouchX) / dt) * 12;
-            velocity = Math.max(-15, Math.min(15, raw));
+        if (mouseSwiped || mouseStartX === null) return;
+        const dx = e.clientX - mouseStartX;
+        if (Math.abs(dx) > SWIPE_THRESHOLD) {
+            mouseSwiped = true;
+            if (dx < 0) goNext();
+            else goPrev();
         }
-        lastTouchX = e.clientX;
-        lastTouchTime = now;
-
-        targetX = dragStartTargetX + dx;
     });
 
     window.addEventListener('mouseup', () => {
-        mouseDown = false;
-        isDragging = false;
+        mouseStartX = null;
     });
 
-    // --- Wrapping helper: keeps a value in [-halfTotal, halfTotal) ---
+    // --- TAP HANDLING ---
+    viewport.addEventListener('click', (e) => {
+        // Block navigation if it was a swipe
+        if (swiped || mouseSwiped) {
+            e.preventDefault();
+        }
+    });
+
+    // --- Wrapping helper ---
     const wrap = (val) => {
         val = val % totalWidth;
         if (val > halfTotal) val -= totalWidth;
@@ -170,50 +143,42 @@ document.addEventListener('DOMContentLoaded', () => {
         return val;
     };
 
+    // Cache previous focus values
+    const prevFocus = new Float32Array(cards.length);
+
     // --- CORE RENDER LOOP ---
     const render = () => {
-        if (!isDragging) {
-            targetX += velocity;
-            velocity *= 0.85;
+        // Smooth spring animation toward target
+        currentX += (targetX - currentX) * 0.12;
 
-            // Snap early and decisively (no clamping — infinite loop)
-            if (Math.abs(velocity) < 2) {
-                velocity = 0;
-                // Find the nearest snap point, accounting for wrapping
-                const wrapped = wrap(targetX);
-                const snap = Math.round(wrapped / step) * step;
-                const diff = snap - wrapped;
-                targetX += diff * 0.25;
-            }
+        // Snap exactly when close enough
+        if (Math.abs(targetX - currentX) < 0.5) {
+            currentX = targetX;
         }
 
-        // Smooth interpolation
-        currentX += (targetX - currentX) * 0.18;
-
-        // Detect active card (wrapped)
-        const wrappedCurrent = wrap(currentX);
-        const rawIndex = Math.round(-wrappedCurrent / step);
-        const activeIndex = ((rawIndex % cards.length) + cards.length) % cards.length;
-        if (activeIndex !== lastActiveIndex) {
-            lastActiveIndex = activeIndex;
-            updateActiveProject(activeIndex);
+        // Detect active card
+        if (currentIndex !== lastActiveIndex) {
+            lastActiveIndex = currentIndex;
+            updateActiveProject(currentIndex);
         }
 
         // Position each card with wrapping
-        cards.forEach((card, i) => {
-            // Where this card should be relative to center
+        for (let i = 0; i < cards.length; i++) {
             let xPos = (i * step) + currentX;
-
-            // Wrap into [-halfTotal, halfTotal)
             xPos = wrap(xPos);
 
             const dist = Math.abs(xPos);
             const focus = Math.max(0, 1 - (dist / (step * 1.2)));
 
-            card.style.setProperty('--focus', focus);
+            const card = cards[i];
             card.style.transform = `translate3d(${xPos}px, 0, 0)`;
-            card.style.pointerEvents = focus > 0.6 ? 'auto' : 'none';
-        });
+
+            if (Math.abs(focus - prevFocus[i]) > 0.01) {
+                prevFocus[i] = focus;
+                card.style.setProperty('--focus', focus);
+                card.style.pointerEvents = focus > 0.6 ? 'auto' : 'none';
+            }
+        }
 
         requestAnimationFrame(render);
     };
@@ -228,6 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
         body.setAttribute('data-theme', projectID === 'planora' ? 'planora' : 'default');
     };
 
-    updateActiveProject(0);
+    goTo(0);
     requestAnimationFrame(render);
 });
