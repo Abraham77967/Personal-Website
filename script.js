@@ -50,18 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
     track.style.height = '100%';
 
     // --- NAVIGATION ---
-    const goTo = (index) => {
-        currentIndex = ((index % cards.length) + cards.length) % cards.length;
-        targetX = -currentIndex * step;
-
-        // Keep targetX in sync with wrapping to avoid long spins
-        const diff = targetX - currentX;
-        if (diff > halfTotal) targetX -= totalWidth;
-        if (diff < -halfTotal) targetX += totalWidth;
+    const goNext = () => {
+        currentIndex = (currentIndex + 1) % cards.length;
+        targetX -= step; // Always move left by one step
     };
 
-    const goNext = () => goTo(currentIndex + 1);
-    const goPrev = () => goTo(currentIndex - 1);
+    const goPrev = () => {
+        currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+        targetX += step; // Always move right by one step
+    };
 
     // --- TOUCH HANDLERS ---
     viewport.addEventListener('touchstart', (e) => {
@@ -193,6 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         body.setAttribute('data-theme', projectID === 'planora' ? 'planora' : 'default');
     };
 
-    goTo(0);
+    updateActiveProject(0);
     requestAnimationFrame(render);
 });
