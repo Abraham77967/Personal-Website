@@ -129,6 +129,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // Block navigation if it was a swipe
         if (swiped || mouseSwiped) {
             e.preventDefault();
+            return;
+        }
+
+        // If clicking on the Home profile card, scroll to the dynamic hub
+        // unless they clicked an actual link (e.g. YouTube button, GitHub, LinkedIn)
+        const card = e.target.closest('.gallery-card');
+        if (card && card.getAttribute('data-project') === 'home') {
+            const clickedLink = e.target.closest('a');
+            if (!clickedLink) {
+                const hub = document.getElementById('dynamic-hub');
+                if (hub) {
+                    hub.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
         }
     });
 
