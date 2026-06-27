@@ -416,6 +416,13 @@ body {
     margin-bottom: 40px;
 }
 
+.root-meaning {
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--accent) 60%, white);
+    margin-top: 15px;
+    letter-spacing: 0.02em;
+}
+
 .feature-list {
     margin-top: 30px;
     display: grid;
