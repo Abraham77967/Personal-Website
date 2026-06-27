@@ -22,9 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const halfTotal = totalWidth / 2;
 
     // --- STATE ---
-    let currentIndex = 0;
-    let currentX = 0;
-    let targetX = 0;
+    const homeIndex = Array.from(cards).findIndex(card => card.getAttribute('data-project') === 'home');
+    let currentIndex = homeIndex !== -1 ? homeIndex : 0;
+    let currentX = -currentIndex * step;
+    let targetX = -currentIndex * step;
     let lastActiveIndex = -1;
 
     // Touch tracking
@@ -101,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: false });
 
     // --- MOUSE FALLBACK ---
-    let mouseStartX = 0;
+    let mouseStartX = null;
     let mouseSwiped = false;
 
     viewport.addEventListener('mousedown', (e) => {
@@ -201,9 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         detailBlocks.forEach(block => {
             block.classList.toggle('is-active', block.getAttribute('data-project') === projectID);
         });
-        body.setAttribute('data-theme', projectID === 'planora' ? 'planora' : 'default');
+        body.setAttribute('data-theme', projectID);
     };
 
-    updateActiveProject(0);
+    updateActiveProject(currentIndex);
     requestAnimationFrame(render);
 });
